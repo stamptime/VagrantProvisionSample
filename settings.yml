@@ -1,0 +1,5 @@
+---
+image: ubuntu/jammy64
+vm: 
+  base-name: devops-runner-team-4
+  amount: 1
