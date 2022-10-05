@@ -25,10 +25,14 @@ Vagrant.configure("2") do |config|
       vb.gui = false
       vb.memory = "1024"
     end
+
+    vmConfig.vm.provision :docker
+
     vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
       "AUTH_TOKEN" => AUTH_TOKEN,
       "RUNNER_NAME" => "#{BASE_NAME}-1"
     } 
+
   end
 
   (1..NODE_COUNT+1).each do |i|
@@ -38,11 +42,18 @@ Vagrant.configure("2") do |config|
         vb.gui = false
         vb.memory = "1024"
       end
+
+      vmConfig.vm.provision "shell", 
+      inline: <<-SHELL 
+      sudo apt update
+      sudo apt-get -y install podman
+      SHELL
+
       vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
         "AUTH_TOKEN" => AUTH_TOKEN,
         "RUNNER_NAME" => "#{BASE_NAME}-#{i}"
       } 
+
     end
   end
-
 end
