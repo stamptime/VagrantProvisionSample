@@ -10,3 +10,4 @@ cd /vagrant/
 docker compose up -d
 echo '\n---------------------------\n'
 echo 'Success'
+echo '\n---------------------------\n'

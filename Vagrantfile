@@ -31,8 +31,9 @@ Vagrant.configure("2") do |config|
     
     vmConfig.vm.provider :virtualbox do |vb|
       vb.gui = false
-      vb.memory = "4096"
+      vb.memory = "5020"
       vb.cpus = "2"
+      vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
     end
 
     vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
@@ -47,7 +48,7 @@ Vagrant.configure("2") do |config|
   (1..NODE_COUNT).each do |i|
     config.vm.define "#{BASE_NAME}-#{i+1}" do |ciConfig|
       ciConfig.vm.box = BOX_IMAGE
-      ciConfig.vm.hostname = "vm-#{i}"
+      ciConfig.vm.hostname = "vm-#{i+1}"
       ciConfig.vm.provider :virtualbox do |vb|
         vb.gui = false
         vb.memory = "512"
@@ -56,7 +57,7 @@ Vagrant.configure("2") do |config|
 
       ciConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
         "AUTH_TOKEN" => AUTH_TOKEN,
-        "RUNNER_NAME" => "#{BASE_NAME}-#{i}"
+        "RUNNER_NAME" => "#{BASE_NAME}-#{i+1}"
       } 
 
       ciConfig.vm.provision "shell", 

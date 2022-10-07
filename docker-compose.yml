@@ -3,32 +3,34 @@
 version: "3"
 services:
   jenkins:
-    image:  jenkins/jenkins:lts-jdk11
+    image:  jenkins:2.60.3-alpine
+    container_name: jenkins_service
     privileged: true
     user: root
     ports:
       - 8080:8080
       - 8082:50000
-    container_name: jenkins
     volumes:
       - jenkins_data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - mynetwork
- 
+    restart: always
+
   nexus:
     image: sonatype/nexus3
+    container_name: nexus_service
     ports: 
       - 8081:8081
-    container_name: nexustry
     volumes:
       - nexus-data:/nexus-data
     networks:
       - mynetwork
+    restart: always
 
   sonarqube:
+    image: sonarqube:alpine
     container_name: sonarqube_service
-    image: sonarqube
     depends_on:
       - postgres
     environment:
@@ -43,9 +45,10 @@ services:
       - 9000:9000
     networks:
       - mynetwork
+    restart: always
 
   postgres:
-    image: postgres
+    image: postgres:alpine
     container_name: postgres_service
     environment:
       POSTGRES_USER: sonar
@@ -56,9 +59,10 @@ services:
       - postgresql_data:/var/lib/postgresql/data
     networks:
       - mynetwork
+    restart: always
 
   portainer:
-    image: portainer/portainer-ce
+    image: portainer/portainer-ce:alpine
     container_name: portainer_service
     ports:
       - 8000:8000
@@ -67,6 +71,7 @@ services:
       - portainer_data:/data
     networks:
       - mynetwork
+    restart: always
 
 volumes:
   sonarqube_data:
