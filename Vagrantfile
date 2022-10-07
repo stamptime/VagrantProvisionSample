@@ -21,39 +21,44 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "#{BASE_NAME}-1" do |vmConfig|
     vmConfig.vm.box = BOX_IMAGE
+    vmConfig.vm.network "forwarded_port", guest: 9000, host: 9000
+    vmConfig.vm.network "forwarded_port", guest: 8000, host: 8000
+    vmConfig.vm.network "forwarded_port", guest: 9443, host: 9443
+
     vmConfig.vm.provider :virtualbox do |vb|
       vb.gui = false
-      vb.memory = "1024"
+      vb.memory = "4096"
     end
 
-    vmConfig.vm.provision :docker
-
+    
     vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
       "AUTH_TOKEN" => AUTH_TOKEN,
       "RUNNER_NAME" => "#{BASE_NAME}-1"
     } 
+    vmConfig.vm.provision :docker
+    vmConfig.vm.provision "shell", path: "./launcher.sh"
 
   end
 
-  (1..NODE_COUNT+1).each do |i|
-    config.vm.define "#{BASE_NAME}-#{i}" do |vmConfig|
-      vmConfig.vm.box = BOX_IMAGE
-      vmConfig.vm.provider :virtualbox do |vb|
-        vb.gui = false
-        vb.memory = "1024"
-      end
+  # (1..NODE_COUNT+1).each do |i|
+  #   config.vm.define "#{BASE_NAME}-#{i}" do |vmConfig|
+  #     vmConfig.vm.box = BOX_IMAGE
+  #     vmConfig.vm.provider :virtualbox do |vb|
+  #       vb.gui = false
+  #       vb.memory = "1024"
+  #     end
 
-      vmConfig.vm.provision "shell", 
-      inline: <<-SHELL 
-      sudo apt update
-      sudo apt-get -y install podman
-      SHELL
+  #     vmConfig.vm.provision "shell", 
+  #     inline: <<-SHELL 
+  #     sudo apt update
+  #     sudo apt-get -y install podman
+  #     SHELL
 
-      vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
-        "AUTH_TOKEN" => AUTH_TOKEN,
-        "RUNNER_NAME" => "#{BASE_NAME}-#{i}"
-      } 
+  #     vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
+  #       "AUTH_TOKEN" => AUTH_TOKEN,
+  #       "RUNNER_NAME" => "#{BASE_NAME}-#{i}"
+  #     } 
 
-    end
-  end
+  #   end
+  # end
 end
