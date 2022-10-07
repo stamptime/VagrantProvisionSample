@@ -45,7 +45,7 @@ Vagrant.configure("2") do |config|
 
   end
 
-  (1..NODE_COUNT).each do |i|
+  (1..NODE_COUNT-1).each do |i|
     config.vm.define "#{BASE_NAME}-#{i+1}" do |ciConfig|
       ciConfig.vm.box = BOX_IMAGE
       ciConfig.vm.hostname = "vm-#{i+1}"
