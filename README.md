@@ -6,13 +6,13 @@ This project uses vagrant to create 2 VM's by default, both machines are provisi
 
 VM 1 uses a docker-compose.yml file that creates and exposes the following containers and ports:
 
-|||
-| --- | --- |
-| `sonarqube-service` | `ports: 9000`<br>`image: sonarqube:alpine`|
-| `jenkins-service` | `ports: 8080, 8082` <br>`image: jenkins:2.60.3-alpine`|
-| `nexus-service` | `ports: 8081` <br>`image: sonatype/nexus3` |
-| `postgres-service` | `ports: 5432` <br>`image: postgres:alpine`| 
-| `portainer-service` | `ports: 9443, 8000` <br>`image: portainer/portainer-ce:alpine`|
+||||
+| --- | --- | --- |
+| `sonarqube-service` | `ports: 9000`<br>`image: sonarqube:alpine`|<h7>[_open_](http://localhost:9000)</h7>|
+| `jenkins-service` | `ports: 8080, 8082` <br>`image: jenkins:2.60.3-alpine`|<h7>[_open_](http://localhost:8080)</h7>|
+| `nexus-service` | `ports: 8081` <br>`image: sonatype/nexus3` |<h7>[_open_](http://localhost:8081)</h7>|
+| `postgres-service` | `ports: 5432` <br>`image: postgres:alpine`|***not displayable***|
+| `portainer-service` | `ports: 9443, 8000` <br>`image: portainer/portainer-ce:alpine`|<h7>[_open_](https://localhost:9443/)</h7>|
 
 ## Requirements:
 * Vagrant and VirtualBox installed
