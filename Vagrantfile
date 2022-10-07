@@ -32,10 +32,10 @@ Vagrant.configure("2") do |config|
     end
 
     vmConfig.vm.provision :docker
-    # vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
-    #   "AUTH_TOKEN" => AUTH_TOKEN,
-    #   "RUNNER_NAME" => "#{BASE_NAME}-1"
-    # } 
+    vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
+      "AUTH_TOKEN" => AUTH_TOKEN,
+      "RUNNER_NAME" => "#{BASE_NAME}-1"
+    } 
 
   end
 
@@ -49,16 +49,15 @@ Vagrant.configure("2") do |config|
         vb.cpus = "1"
       end
 
+      ciConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
+        "AUTH_TOKEN" => AUTH_TOKEN,
+        "RUNNER_NAME" => "#{BASE_NAME}-#{i}"
+      } 
+
       ciConfig.vm.provision "shell", 
       inline: <<-SHELL 
-      sudo apt update
       sudo apt-get -y install podman
       SHELL
-
-      # vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
-      #   "AUTH_TOKEN" => AUTH_TOKEN,
-      #   "RUNNER_NAME" => "#{BASE_NAME}-#{i}"
-      # } 
 
     end
   end
