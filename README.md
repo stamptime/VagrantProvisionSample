@@ -4,17 +4,26 @@ This project uses vagrant to create 2 VM's by default, both machines are provisi
 - The VM 1 is provisioned with Docker.
 - The VM 2 is provisioned with Podman.
 
-VM 1 uses a docker-compose.yml file that creates the following containers:
-- Sonarqube
-- Jenkins
-- Nexus
-- Postgres
-- Portainer
+VM 1 uses a docker-compose.yml file that creates and exposes the following containers and ports:
+
+|||
+| --- | --- |
+| `sonarqube-service` | `ports: 9000`<br>`image: sonarqube:alpine`|
+| `jenkins-service` | `ports: 8080, 8082` <br>`image: jenkins:2.60.3-alpine`|
+| `nexus-service` | `ports: 8081` <br>`image: sonatype/nexus3` |
+| `postgres-service` | `ports: 5432` <br>`image: postgres:alpine`| 
+| `portainer-service` | `ports: 9443, 8000` <br>`image: portainer/portainer-ce:alpine`|
 
 ## Requirements:
 * Vagrant and VirtualBox installed
 * Personal Github Token
 * You need to create a local.yml file at the same level of the Vagrantfile
+
+
+#### Recommendations:
+To avoid `Timed out while waiting for the machine to boot` on windows OS we recommend to disable "Hyper V", "Windows hypervisor platform" and "Virtual machine platform" windows features.
+
+Check for [more information](https://stackoverflow.com/questions/43379459/vagrant-up-it-stops-at-ssh-auth-method-private-key).
 
 -----
 ## `local.yml` environment Variables ##
@@ -55,12 +64,4 @@ vm:
 ## Run Program
 
 Use the `vagrant up` command in your terminal.
-
-
-
-
-
-
-
-
 
