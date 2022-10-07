@@ -1,3 +1,32 @@
 ---
-version: "3.9"
+  # docker-compose.yaml
 services:
+  jenkins:
+    image:  jenkins/jenkins:lts-jdk11
+    privileged: true
+    user: root
+    ports:
+      - 8080:8080
+      - 8082:50000
+    container_name: jenkins
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - mynetwork
+  nexus:
+    image: sonatype/nexus3
+    ports: 
+      - 8081:8081
+    container_name: nexustry
+    volumes:
+      - nexus-data:/nexus-data
+    networks:
+      - mynetwork
+
+volumes:
+  nexus-data:
+  jenkins_data:
+
+networks:
+  mynetwork:

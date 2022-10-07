@@ -21,13 +21,17 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "#{BASE_NAME}-1" do |vmConfig|
     vmConfig.vm.box = BOX_IMAGE
+    vmConfig.vm.hostname = 'vm1'
+    vmConfig.vm.network "forwarded_port", guest: 8080, host: 8080
+    vmConfig.vm.network "forwarded_port", guest: 8081, host: 8081
+    vmConfig.vm.network "forwarded_port", guest: 8082, host: 8082
     vmConfig.vm.provider :virtualbox do |vb|
       vb.gui = false
-      vb.memory = "1024"
+      vb.memory = "4096"
+      vb.cpus = "2"
     end
 
     vmConfig.vm.provision :docker
-
     vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
       "AUTH_TOKEN" => AUTH_TOKEN,
       "RUNNER_NAME" => "#{BASE_NAME}-1"
@@ -35,24 +39,25 @@ Vagrant.configure("2") do |config|
 
   end
 
-  (1..NODE_COUNT+1).each do |i|
-    config.vm.define "#{BASE_NAME}-#{i}" do |vmConfig|
-      vmConfig.vm.box = BOX_IMAGE
-      vmConfig.vm.provider :virtualbox do |vb|
+  (1..NODE_COUNT).each do |i|
+    config.vm.define "#{BASE_NAME}-#{i+1}" do |ciConfig|
+      ciConfig.vm.box = BOX_IMAGE
+      ciConfig.vm.hostname = "agent-#{i}"
+      ciConfig.vm.provider :virtualbox do |vb|
         vb.gui = false
-        vb.memory = "1024"
+        vb.memory = "512"
+        vb.cpus = "1"
       end
 
-      vmConfig.vm.provision "shell", 
-      inline: <<-SHELL 
-      sudo apt update
-      sudo apt-get -y install podman
-      SHELL
-
-      vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
+      ciConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
         "AUTH_TOKEN" => AUTH_TOKEN,
         "RUNNER_NAME" => "#{BASE_NAME}-#{i}"
       } 
+
+      ciConfig.vm.provision "shell", 
+      inline: <<-SHELL 
+      sudo apt-get -y install podman
+      SHELL
 
     end
   end
