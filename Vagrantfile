@@ -25,24 +25,29 @@ Vagrant.configure("2") do |config|
     vmConfig.vm.network "forwarded_port", guest: 8080, host: 8080
     vmConfig.vm.network "forwarded_port", guest: 8081, host: 8081
     vmConfig.vm.network "forwarded_port", guest: 8082, host: 8082
+    vmConfig.vm.network "forwarded_port", guest: 9000, host: 9000
+    vmConfig.vm.network "forwarded_port", guest: 8000, host: 8000
+    vmConfig.vm.network "forwarded_port", guest: 9443, host: 9443
+    
     vmConfig.vm.provider :virtualbox do |vb|
       vb.gui = false
       vb.memory = "4096"
       vb.cpus = "2"
     end
 
-    vmConfig.vm.provision :docker
     vmConfig.vm.provision "shell", path: RUNNER_PROVISION_SCRIPT, env: {
       "AUTH_TOKEN" => AUTH_TOKEN,
       "RUNNER_NAME" => "#{BASE_NAME}-1"
     } 
+    vmConfig.vm.provision :docker
+    vmConfig.vm.provision "shell", path: "./launcher.sh"
 
   end
 
   (1..NODE_COUNT).each do |i|
     config.vm.define "#{BASE_NAME}-#{i+1}" do |ciConfig|
       ciConfig.vm.box = BOX_IMAGE
-      ciConfig.vm.hostname = "agent-#{i}"
+      ciConfig.vm.hostname = "vm-#{i}"
       ciConfig.vm.provider :virtualbox do |vb|
         vb.gui = false
         vb.memory = "512"
