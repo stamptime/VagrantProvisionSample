@@ -1,4 +1,4 @@
-# Virtualization and containers final project 
+# Vagrant Environment Provisioning Sample.
 ## Description:
 This project uses vagrant to create 2 VM's by default, both machines are provisioned and configured as a GitHub Runner at the global organization settings.
 - The VM 1 is provisioned with Docker.
